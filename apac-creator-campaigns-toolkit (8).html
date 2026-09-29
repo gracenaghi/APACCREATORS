@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APAC Creator Campaigns Toolkit</title>
+<style>
+  :root{
+    --ink:#17151A;
+    --ink-2:#211E24;
+    --paper:#FFFFFF;
+    --paper-line:#E3E3E3;
+    --lnred:#E1213A;
+    --lnred-deep:#A8112A;
+    --lnwhite-accent:#FFFFFF;
+    --warn:#D9822B;
+    --off-white:#F3EFE6;
+    --muted:#B8AFA0;
+    --muted-dark:#7D7566;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--off-white);
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    border-top:6px solid var(--lnred);
+  }
+  h1,h2,h3,.display{
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+    letter-spacing:0.02em;
+    font-weight:700;
+    margin:0;
+  }
+  .num{ font-variant-numeric: tabular-nums; }
+  a{color:inherit;}
+  button{font-family:inherit;}
+
+  /* ---------- Layout shell ---------- */
+  .app{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
+
+  .masthead{
+    background:#FFFFFF;
+    width:100vw;
+    position:relative;
+    left:50%;
+    right:50%;
+    margin-left:-50vw;
+    margin-right:-50vw;
+    border-bottom:1px solid #E6E6E6;
+  }
+  .masthead-inner{
+    max-width:1180px;
+    margin:0 auto;
+    padding:28px 24px 0;
+  }
+  .wordmark-logo{
+    display:block;
+    height:40px;
+    width:auto;
+    margin-bottom:20px;
+  }
+  .wordmark{
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:0.14em;
+    color:#FFFFFF;
+    background:var(--lnred);
+    display:none;
+    padding:6px 12px 5px;
+    margin-bottom:20px;
+  }
+  .wordmark span{font-size:9px; vertical-align:super; margin-left:1px;}
+  .masthead-top{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+    padding-bottom:28px;
+  }
+  .masthead h1{
+    font-size:clamp(40px,6vw,64px);
+    line-height:0.92;
+    color:#141414;
+  }
+  .masthead h1 span{color:var(--lnred);}
+  .masthead .kicker{
+    font-size:13px;
+    color:#6B6B6B;
+    max-width:480px;
+    text-align:left;
+  }
+
+  .phase-nav{
+    display:flex;
+    gap:4px;
+  }
+  .phase{position:relative;}
+  .phase-toggle{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    background:none;
+    border:none;
+    color:#6B6B6B;
+    padding:14px 16px 16px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+    border-bottom:3px solid transparent;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .phase-toggle:hover{color:#141414;}
+  .phase-toggle.active{
+    color:var(--lnred);
+    border-bottom-color:var(--lnred);
+  }
+  .phase-toggle .caret{
+    font-size:9px;
+    color:#B3B3B3;
+    transition:transform .15s ease;
+  }
+  .phase.open .phase-toggle .caret{transform:rotate(180deg);}
+
+  .phase-menu{
+    display:none;
+    flex-direction:column;
+    position:absolute;
+    top:100%;
+    left:0;
+    min-width:200px;
+    background:#FFFFFF;
+    border:1px solid #E6E6E6;
+    box-shadow:0 10px 28px rgba(0,0,0,0.1);
+    padding:6px;
+    z-index:30;
+  }
+  .phase.open .phase-menu{display:flex;}
+  .phase-menu button{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:none;
+    border:none;
+    font-size:14px;
+    font-weight:500;
+    color:#2B2B2B;
+    padding:10px 12px;
+    cursor:pointer;
+    border-radius:2px;
+  }
+  .phase-menu button:hover{background:#F4F4F4;}
+  .phase-menu button.active{color:var(--lnred); font-weight:700;}
+
+  main{padding-top:40px;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block; animation:rise .35s ease;}
+  @media (prefers-reduced-motion: reduce){
+    .tab-panel.active{animation:none;}
+  }
+  @keyframes rise{
+    from{opacity:0; transform:translateY(6px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  section h2.section-title{
+    font-size:30px;
+    color:var(--off-white);
+    margin-bottom:6px;
+  }
+  .section-sub{
+    color:var(--muted);
+    font-size:14px;
+    max-width:560px;
+    margin-bottom:32px;
+  }
+
+  /* ---------- Start Here ---------- */
+  .attention-mini{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+    margin-bottom:16px;
+    font-size:11.5px;
+  }
+  .attention-mini > div{display:flex; gap:8px; align-items:baseline;}
+  .attention-mini .verb{
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--muted-dark);
+    min-width:108px;
+  }
+  .attention-mini .def{color:var(--muted);}
+  .attention-mini .current .verb{color:var(--lnred);}
+  .attention-mini .current .def{color:var(--off-white);}
+
+  .steps{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:1px;
+    background:rgba(243,239,230,0.12);
+    border:1px solid rgba(243,239,230,0.12);
+  }
+  .step{
+    background:var(--ink);
+    padding:26px 22px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .step .step-no{
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight:700;
+    font-size:34px;
+    color:var(--lnred);
+  }
+  .step h3{font-size:19px; color:var(--off-white); font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight:700;}
+  .step .use-when{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted-dark);}
+  .step p{margin:0; font-size:13.5px; color:var(--muted); white-space:pre-line;}
+  .step .why{font-size:13px; color:var(--lnwhite-accent); white-space:pre-line; margin-top:auto; padding-top:8px; border-top:1px dashed rgba(243,239,230,0.15);}
+
+  .creator-block{
+    border-bottom:1px solid rgba(243,239,230,0.12);
+    padding-bottom:20px;
+  }
+  .creator-block + .creator-block{margin-top:20px;}
+  .creator-block:last-child{border-bottom:none;}
+
+  .creator-q{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    width:100%;
+    background:none;
+    border:none;
+    cursor:pointer;
+    text-align:left;
+    padding:0;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size:22px;
+    font-weight:700;
+    color:var(--off-white);
+  }
+  .creator-q:hover{color:var(--lnred);}
+  .creator-caret{
+    font-size:13px;
+    color:var(--muted-dark);
+    flex:0 0 auto;
+    margin-left:16px;
+    transition:transform .15s ease;
+  }
+  .creator-block.open .creator-caret{transform:rotate(180deg);}
+
+  .creator-a{display:none; margin-top:16px;}
+  .creator-block.open .creator-a{display:block;}
+
+  .creator-intro{font-size:14.5px; line-height:1.6; color:var(--muted); max-width:680px; margin-bottom:22px;}
+
+  /* ---------- Calculator ---------- */
+  .calc-grid{
+    display:grid;
+    grid-template-columns:340px 1fr;
+    gap:28px;
+    align-items:start;
+  }
+  @media (max-width:840px){ .calc-grid{grid-template-columns:1fr;} }
+
+  .ticket{
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:var(--radius);
+    position:relative;
+  }
+  .order-form{
+    padding:28px 26px 30px;
+  }
+  .order-form .eyebrow{
+    font-size:12px;
+    color:var(--lnred-deep);
+    font-weight:700;
+    margin-bottom:4px;
+  }
+  .order-form h3{
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight:700;
+    font-size:20px;
+    margin-bottom:20px;
+    color:var(--ink);
+  }
+  .field{margin-bottom:18px;}
+  .field label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--muted-dark);
+    margin-bottom:6px;
+  }
+  .field select, .field input{
+    width:100%;
+    padding:10px 12px;
+    font-size:15px;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+    border:1px solid var(--paper-line);
+    background:#fff;
+    color:var(--ink);
+    border-radius:1px;
+  }
+  .field select:focus, .field input:focus{
+    outline:2px solid var(--lnred-deep);
+    outline-offset:1px;
+  }
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .perf{
+    height:14px;
+    background-image: radial-gradient(circle, var(--ink) 3px, transparent 3.5px);
+    background-size:16px 16px;
+    background-position:center;
+    opacity:0.25;
+  }
+
+  .readout{
+    background:var(--ink-2);
+    border:1px solid rgba(243,239,230,0.1);
+    padding:28px 26px;
+  }
+  .readout .eyebrow{font-size:12px; color:var(--muted-dark); font-weight:700; margin-bottom:18px;}
+  .hero-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    padding-bottom:24px;
+    border-bottom:1px solid rgba(243,239,230,0.12);
+    margin-bottom:24px;
+  }
+  .hero-stat .label{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;}
+  .hero-stat .value{font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight:700; font-size:48px; line-height:1; margin-top:6px;}
+  .hero-stat.profit .value{color:var(--lnred);}
+  .hero-stat.margin .value{color:var(--lnwhite-accent);}
+
+  .pkg-flag{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--lnred);
+    color:#FFFFFF;
+    font-weight:700;
+    font-size:13px;
+    padding:6px 12px 6px 10px;
+    margin-bottom:22px;
+  }
+  .pkg-flag .dot{width:7px;height:7px;background:#FFFFFF;border-radius:50%;}
+
+  .warn-box{
+    background:rgba(217,130,43,0.14);
+    border:1px solid rgba(217,130,43,0.45);
+    color:#F6D9B8;
+    padding:18px 20px;
+    font-size:14px;
+    margin-bottom:22px;
+  }
+  .warn-box b{color:#fff;}
+
+  .stat-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:rgba(243,239,230,0.1);
+    margin-bottom:26px;
+  }
+  @media (max-width:560px){ .stat-grid{grid-template-columns:repeat(2,1fr);} }
+  .stat-tile{
+    background:var(--ink-2);
+    padding:16px 16px 18px;
+  }
+  .stat-tile .label{font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em;}
+  .stat-tile .value{font-size:21px; font-weight:600; color:var(--off-white); margin-top:6px;}
+
+  .per-creator{
+    margin-bottom:26px;
+  }
+  .per-creator h4{
+    font-size:12px; color:var(--muted-dark); text-transform:uppercase; letter-spacing:0.06em;
+    margin:0 0 10px;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight:700;
+  }
+  table.pc-table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  table.pc-table td{padding:8px 0; border-bottom:1px solid rgba(243,239,230,0.08); color:var(--muted);}
+  table.pc-table td:last-child{text-align:right; color:var(--off-white); font-weight:600;}
+
+  .match-card{
+    background:var(--paper);
+    color:var(--ink);
+    padding:24px 24px 26px;
+    border-left:4px solid var(--lnred-deep);
+  }
+  .match-card .eyebrow{font-size:12px; color:var(--lnred-deep); font-weight:700; margin-bottom:6px;}
+  .match-card h4{font-size:22px; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight:700; margin-bottom:6px;}
+  .match-card .tagline{font-size:14px; color:#4a4436; margin-bottom:16px;}
+  .match-cols{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media (max-width:560px){ .match-cols{grid-template-columns:1fr;} }
+  .match-cols h5{font-size:11.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted-dark); margin:0 0 8px; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight:700;}
+  .match-cols ul{margin:0; padding-left:18px; font-size:13.5px;}
+  .match-cols li{margin-bottom:5px;}
+  .match-actions{display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;}
+  .btn{
+    border:1px solid var(--ink);
+    background:none;
+    color:var(--ink);
+    padding:10px 16px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  .btn:hover{background:var(--ink); color:var(--paper);}
+  .btn.on-dark{border-color:var(--lnred); color:var(--lnred);}
+  .btn.on-dark:hover{background:var(--lnred); color:var(--ink);}
+  .download-btn{margin-top:24px;}
+
+  /* ---------- Packages ---------- */
+  .pkg-table-wrap{overflow-x:auto; margin-bottom:36px;}
+  table.pkg-table{width:100%; border-collapse:collapse; min-width:760px;}
+  table.pkg-table th{
+    text-align:left;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--muted-dark);
+    padding:0 14px 10px;
+    border-bottom:1px solid rgba(243,239,230,0.16);
+  }
+  table.pkg-table td{
+    padding:14px 14px;
+    font-size:14px;
+    border-bottom:1px solid rgba(243,239,230,0.08);
+    color:var(--muted);
+  }
+  table.pkg-table tr.pkg-row td:first-child{color:var(--off-white); font-weight:700;}
+  table.pkg-table tr.pkg-row{cursor:pointer;}
+  table.pkg-table tr.pkg-row:hover{background:rgba(243,239,230,0.04);}
+  table.pkg-table tr.pkg-row.current{background:rgba(225,33,58,0.12);}
+  table.pkg-table tr.pkg-row.current td:first-child{color:var(--lnred);}
+
+  .pkg-detail{
+    display:none;
+    background:var(--ink-2);
+    border:1px solid rgba(243,239,230,0.1);
+    padding:26px 26px 28px;
+    margin-top:-24px;
+    margin-bottom:30px;
+  }
+  .pkg-detail.open{display:block;}
+  .pkg-detail h4{font-size:24px; color:var(--lnred); margin-bottom:4px;}
+  .pkg-detail .tagline{color:var(--muted); font-size:14px; margin-bottom:20px;}
+  .pkg-detail .match-cols h5{color:var(--muted-dark);}
+  .pkg-detail .match-cols ul{color:var(--off-white);}
+  .pkg-note{font-size:12.5px; color:var(--muted-dark); margin-top:6px;}
+
+  /* ---------- Sales ---------- */
+  .pitch-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:1px;
+    background:rgba(243,239,230,0.1);
+    margin-bottom:40px;
+  }
+  .pitch-card{
+    background:var(--ink-2);
+    padding:20px;
+    transition:background .2s ease;
+  }
+  .pitch-card.highlight{background:rgba(225,33,58,0.14); box-shadow:inset 3px 0 0 var(--lnred);}
+  .pitch-card h4{font-size:18px; color:var(--off-white); margin-bottom:8px;}
+  .pitch-card p{font-size:13.5px; color:var(--muted); margin:0;}
+  .custom-note{font-size:13px; color:var(--lnred); font-weight:600; margin-bottom:36px;}
+
+  .why-block{margin-bottom:36px;}
+  .why-block h3{font-size:13px; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted-dark); font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight:700; margin-bottom:14px;}
+  .why-rows{display:grid; gap:1px; background:rgba(243,239,230,0.1);}
+  .why-row{background:var(--ink); padding:14px 18px; display:grid; grid-template-columns:140px 1fr; gap:16px;}
+  .why-row .term{color:var(--lnwhite-accent); font-weight:700; font-size:13.5px;}
+  .why-row .def{color:var(--muted); font-size:13.5px;}
+
+  .soundbites{display:grid; gap:14px;}
+  .soundbite{
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight:700;
+    font-size:26px;
+    color:var(--off-white);
+    padding:18px 22px;
+    border-left:4px solid var(--lnred);
+    background:var(--ink-2);
+  }
+
+  /* ---------- Pitch on a page ---------- */
+  .pop-slide{
+    background:#FFFFFF;
+    color:#141414;
+    padding:40px 36px 44px;
+    border-radius:2px;
+  }
+  .pop-headline{
+    font-size:clamp(24px,3.4vw,34px);
+    line-height:1.15;
+    color:#141414;
+    margin-bottom:28px;
+    max-width:900px;
+  }
+  .pop-headline span{color:var(--lnred);}
+
+  .pop-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+  }
+  @media (max-width:820px){ .pop-grid{grid-template-columns:1fr;} }
+
+  .pop-card{padding:26px 24px 28px; border-radius:2px;}
+  .pop-grey{background:#F1F1F1; color:#1B1B1B;}
+  .pop-dark{background:#2B2A2C; color:#F2F0EC;}
+  .pop-red{background:var(--lnred); color:#FFFFFF;}
+
+  .pop-label{
+    font-size:11.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    margin-bottom:14px;
+  }
+  .pop-grey .pop-label{color:#8A8A8A;}
+  .pop-dark .pop-label{color:#B7B3AC;}
+  .pop-red .pop-label{color:#FBD0D6;}
+
+  .pop-card h4{
+    font-size:22px;
+    line-height:1.2;
+    font-weight:700;
+    margin-bottom:20px;
+  }
+
+  .pop-divider{height:1px; margin-bottom:22px;}
+  .pop-grey .pop-divider{background:#D8D8D8;}
+  .pop-dark .pop-divider{background:#48464A;}
+  .pop-red .pop-divider{background:rgba(255,255,255,0.35);}
+
+  .pop-list{list-style:none; margin:0; padding:0; display:grid; gap:18px;}
+  .pop-list li{display:flex; align-items:flex-start; gap:14px; font-size:14.5px; line-height:1.4;}
+  .pop-icon{flex:0 0 auto; width:26px; height:26px;}
+  .pop-icon svg{width:100%; height:100%;}
+  .pop-grey .pop-icon{color:var(--lnred);}
+  .pop-dark .pop-icon{color:#F2F0EC;}
+
+  .pop-impact{margin-bottom:20px;}
+  .pop-impact:last-child{margin-bottom:0;}
+  .pop-impact p{margin:0; font-size:14.5px; line-height:1.4;}
+  .pop-pill{
+    display:inline-block;
+    background:rgba(255,255,255,0.85);
+    color:var(--lnred);
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    padding:5px 12px;
+    border-radius:3px;
+    margin-bottom:8px;
+  }
+
+  /* ---------- Directory ---------- */
+  .dir-filter{padding:22px 24px 20px; margin-bottom:26px;}
+  .field-row-4{display:grid; grid-template-columns:repeat(4,1fr); gap:12px;}
+  @media (max-width:760px){ .field-row-4{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:460px){ .field-row-4{grid-template-columns:1fr;} }
+  .dir-filter .field{margin-bottom:0;}
+  .dir-filter-actions{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    flex-wrap:wrap; margin-top:16px; padding-top:14px; border-top:1px dashed var(--paper-line);
+  }
+  .dir-count{font-size:12.5px; color:var(--muted-dark); font-weight:600;}
+
+  .dir-table-wrap{overflow-x:auto;}
+  table.dir-table{width:100%; border-collapse:collapse; min-width:640px;}
+  table.dir-table th{
+    text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:0.04em;
+    color:var(--muted-dark); padding:0 12px 10px; border-bottom:1px solid rgba(243,239,230,0.16);
+  }
+  table.dir-table td{padding:11px 12px; font-size:13.5px; border-bottom:1px solid rgba(243,239,230,0.08); color:var(--muted);}
+  table.dir-table td.cost{color:var(--off-white); font-weight:600; text-align:right;}
+  td.dir-empty-row{padding:28px 12px !important; text-align:center; color:var(--muted-dark) !important; font-style:italic;}
+
+  /* ---------- Setup ---------- */
+  .checklist{list-style:none; margin:0; padding:0; max-width:560px;}
+  .checklist li{
+    display:flex; align-items:flex-start; gap:12px;
+    padding:14px 0; border-bottom:1px solid rgba(243,239,230,0.1);
+    font-size:14.5px; color:var(--off-white);
+  }
+  .checklist input[type=checkbox]{margin-top:3px; width:16px; height:16px; accent-color:var(--lnred);}
+  .checklist li span.tag{
+    display:block; font-size:11.5px; color:var(--muted-dark); text-transform:uppercase; letter-spacing:0.04em; margin-top:2px;
+  }
+  .placeholder-note{
+    margin-top:24px; font-size:13px; color:var(--muted-dark); max-width:520px;
+  }
+
+  footer.foot{
+    margin-top:60px;
+    padding-top:20px;
+    border-top:1px solid rgba(243,239,230,0.1);
+    font-size:12px;
+    color:var(--muted-dark);
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="masthead">
+   <div class="masthead-inner">
+    <img src="data:image/png;base64,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" alt="Live Nation Entertainment" class="wordmark-logo">
+    <div class="masthead-top">
+      <h1>APAC Creator<br><span>Campaigns Toolkit</span></h1>
+      <p class="kicker">Package and pitch profitable creator campaigns tailored to your market.</p>
+    </div>
+    <nav class="phase-nav" id="phaseNav">
+      <div class="phase" data-phase="learn">
+        <button type="button" class="phase-toggle active">Learn <span class="caret">&#9662;</span></button>
+        <div class="phase-menu">
+          <button data-tab="start" class="active">Start here</button>
+          <button data-tab="glossary">Creators</button>
+        </div>
+      </div>
+      <div class="phase" data-phase="create">
+        <button type="button" class="phase-toggle">Create <span class="caret">&#9662;</span></button>
+        <div class="phase-menu">
+          <button data-tab="calculator">Calculator</button>
+          <button data-tab="directory">Creator directory</button>
+        </div>
+      </div>
+      <div class="phase" data-phase="position">
+        <button type="button" class="phase-toggle">Positioning <span class="caret">&#9662;</span></button>
+        <div class="phase-menu">
+          <button data-tab="packages">Packages</button>
+          <button data-tab="sales">Positioning</button>
+          <button data-tab="pitch-page">Pitch on a page</button>
+        </div>
+      </div>
+      <div class="phase" data-phase="setup">
+        <button type="button" class="phase-toggle" data-tab="setup">Set-up</button>
+      </div>
+    </nav>
+   </div>
+  </header>
+
+  <main>
+
+    <!-- START HERE -->
+    <section class="tab-panel active" id="tab-start">
+      <h2 class="section-title">How to use this toolkit</h2>
+      <p class="section-sub">Four steps for forecasting to signed deal.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-no">01</div>
+          <h3>Calculator</h3>
+          <div class="use-when">Use when forecasting</div>
+          <p>Input your budget, creator count and event count.</p>
+          <p class="why">Protects your profit and gives an early read on performance.</p>
+        </div>
+        <div class="step">
+          <div class="step-no">02</div>
+          <h3>Packages</h3>
+          <div class="use-when">Use when pitching &mdash; what</div>
+          <p>Find where the client fits, and see the upsell.</p>
+          <p class="why">Positions the value of paid media and creator tier.</p>
+        </div>
+        <div class="step">
+          <div class="step-no">03</div>
+          <h3>Positioning</h3>
+          <div class="use-when">Use when pitching &mdash; how</div>
+          <p>Lift the language as needed or use the full Pitch on a page.</p>
+          <p class="why">Proves the value of paid media.</p>
+        </div>
+        <div class="step">
+          <div class="step-no">04</div>
+          <h3>Set-up</h3>
+          <div class="use-when">Use once the deal is confirmed</div>
+          <p>What happens next, in order.</p>
+          <p class="why">Keeps hand-off simple.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- GLOSSARY -->
+    <section class="tab-panel" id="tab-glossary">
+      <div class="creator-block open">
+        <button type="button" class="creator-q" onclick="toggleCreatorBlock(this)">
+          <span>What is a creator?</span>
+          <span class="creator-caret">&#9662;</span>
+        </button>
+        <div class="creator-a">
+          <p class="creator-intro">A creator is someone who has built their own audience by publishing original content either video, photo or audio on social platforms like TikTok, Instagram or YouTube.</p>
+          <p class="creator-intro">Unlike a traditional celebrity influencer endorsement, the value is further than just reach: it's the trust and engagement a creator has earned with people who chose to follow them which makes their content convert.</p>
+
+          <div class="why-rows">
+            <div class="why-row"><div class="term">Nano*</div><div class="def">Under 10K followers. Small, tightly engaged niche audience.</div></div>
+            <div class="why-row"><div class="term">Micro</div><div class="def">10K&ndash;100K followers. Strong engagement rates, accessible cost.</div></div>
+            <div class="why-row"><div class="term">Mid-tier</div><div class="def">100K&ndash;500K followers. Established audience and professional content.</div></div>
+            <div class="why-row"><div class="term">Macro</div><div class="def">500K&ndash;1M followers. Broad reach with a proven, brand-safe track record.</div></div>
+            <div class="why-row"><div class="term">Mega / Celebrity</div><div class="def">1M+ followers. Mass reach, often paired with existing fame off-platform.</div></div>
+          </div>
+          <p class="pkg-note">*Not available with Live Nation.</p>
+          <p class="pkg-note">These tiers are general industry rules of thumb, not a fixed standard &mdash; ranges vary by platform and market. See the Creator Directory tab for real rates by tier.</p>
+        </div>
+      </div>
+
+      <div class="creator-block">
+        <button type="button" class="creator-q" onclick="toggleCreatorBlock(this)">
+          <span>Why do I need creators?</span>
+          <span class="creator-caret">&#9662;</span>
+        </button>
+        <div class="creator-a">
+          <p class="creator-intro">Paid media alone buys attention; it doesn't buy trust. A creator brings an audience that already listens to them, content that doesn't look like an ad, and a faster route into markets and communities a brand doesn't have a foothold in yet.</p>
+
+          <div class="why-rows">
+            <div class="why-row"><div class="term">Credibility</div><div class="def">Fans trust a creator's recommendation more than a brand's own ad.</div></div>
+            <div class="why-row"><div class="term">Content that performs</div><div class="def">Native-feeling video and photo consistently out-engages traditional ad creative.</div></div>
+            <div class="why-row"><div class="term">Access</div><div class="def">Reaches audiences a brand can't build itself &mdash; local, niche or younger fanbases.</div></div>
+            <div class="why-row"><div class="term">Speed</div><div class="def">Content goes live in days, not the weeks a traditional production needs.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="creator-block">
+        <button type="button" class="creator-q" onclick="toggleCreatorBlock(this)">
+          <span>Why not the partner's own creators?</span>
+          <span class="creator-caret">&#9662;</span>
+        </button>
+        <div class="creator-a">
+          <p class="creator-intro">Booking creator and media through Live Nation buys a guaranteed, measured outcome, with one party accountable for all of it.</p>
+
+          <div class="why-rows">
+            <div class="why-row"><div class="term">Rates and relationships already exist</div><div class="def">Talent fees, travel costs and management terms per market are already negotiated. A partner going direct starts from zero and pays retail.</div></div>
+            <div class="why-row"><div class="term">One point of accountability</div><div class="def">Talent, media and reporting sit under a single contract and a single team &mdash; if a creator underdelivers, that's Live Nation's problem to fix, not the client's.</div></div>
+            <div class="why-row"><div class="term">Reach is guaranteed</div><div class="def">Direct-to-creator gets organic reach only. Bundling in Live Nation media backs the content with paid distribution, so impressions are a number in the contract, not a hope.</div></div>
+            <div class="why-row"><div class="term">Targeting the creator can't do alone</div><div class="def">A creator's own following is one audience and the partner's is their own audience. Live Nation layers a fresh new audience to find new prospects whilst engaging at scale.</div></div>
+          </div>
+          <p class="pkg-note">The management fee isn't a markup on the creator &mdash; it's what pays for the guarantee, the targeting and the accountability a direct booking doesn't come with.</p>
+        </div>
+      </div>
+
+      <div class="creator-block">
+        <button type="button" class="creator-q" onclick="toggleCreatorBlock(this)">
+          <span>When should I use creators?</span>
+          <span class="creator-caret">&#9662;</span>
+        </button>
+        <div class="creator-a">
+          <p class="creator-intro">Not every campaign needs one. Creators earn their spot when the goal is trust, reach into a specific audience, or content at a volume and speed paid media can't produce alone.</p>
+
+          <div class="why-rows">
+            <div class="why-row"><div class="term">New audience</div><div class="def">Targeting an untested audience &mdash; or even genre, market, demographics.</div></div>
+            <div class="why-row"><div class="term">Launch moment</div><div class="def">A tour, artist or event announcement that needs a fast, credible spike in attention.</div></div>
+            <div class="why-row"><div class="term">Proof over polish</div><div class="def">The message lands better as lived experience than as a produced ad.</div></div>
+            <div class="why-row"><div class="term">Content gap</div><div class="def">The media plan needs more creative volume than the production budget allows.</div></div>
+          </div>
+          <p class="pkg-note">If none of these apply, paid media on its own may do the job &mdash; creators add cost and lead time, so they're worth it when they're solving one of the problems above.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALCULATOR -->
+    <section class="tab-panel" id="tab-calculator">
+      <h2 class="section-title">Calculator</h2>
+      <p class="section-sub">Enter a market and a budget. Package, cost split and expected performance recalculate as you type &mdash; and pull in the matching package and pitch below.</p>
+
+      <div class="calc-grid">
+        <div class="ticket order-form">
+          <div class="eyebrow">Input requirements (USD)</div>
+          <h3>Campaign brief</h3>
+
+          <div class="field">
+            <label for="in-market">Market</label>
+            <select id="in-market">
+              <option value="AU">Australia (AU)</option>
+              <option value="NZ">New Zealand (NZ)</option>
+              <option value="SG">Singapore (SG)</option>
+              <option value="JP">Japan (JP)</option>
+              <option value="KR">Korea (KR)</option>
+              <option value="CN">China (CN)</option>
+              <option value="MY">Malaysia (MY)</option>
+              <option value="PH">Philippines (PH)</option>
+              <option value="TH">Thailand (TH)</option>
+              <option value="TW">Taiwan (TW)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="in-investment">Client investment</label>
+            <input type="number" id="in-investment" value="150000" min="0" step="1000">
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="in-events"># Events</label>
+              <input type="number" id="in-events" value="2" min="1" step="1">
+            </div>
+            <div class="field">
+              <label for="in-creators"># Creators</label>
+              <input type="number" id="in-creators" value="2" min="1" step="1">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="in-platform">Platform</label>
+            <select id="in-platform">
+              <option value="TikTok">TikTok</option>
+              <option value="Meta">Meta</option>
+              <option value="Mixed">Mixed</option>
+            </select>
+          </div>
+
+          <div class="perf"></div>
+        </div>
+
+        <div class="readout" id="readout">
+          <!-- rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- DIRECTORY -->
+    <section class="tab-panel" id="tab-directory">
+      <h2 class="section-title">Creator directory</h2>
+      <p class="section-sub">Sample rate card, from a past AU campaign. Filter by market, tier, platform or budget to call up creators who fit &mdash; or pull your budget straight from the calculator.</p>
+
+      <div class="ticket dir-filter">
+        <div class="field-row-4">
+          <div class="field"><label for="dir-f-market">Market</label><select id="dir-f-market"></select></div>
+          <div class="field"><label for="dir-f-tier">Tier</label><select id="dir-f-tier"></select></div>
+          <div class="field"><label for="dir-f-platform">Platform</label><select id="dir-f-platform"></select></div>
+          <div class="field"><label for="dir-f-budget">Max cost (USD)</label><input type="number" id="dir-f-budget" placeholder="Any" min="0" step="500"></div>
+        </div>
+        <div class="dir-filter-actions">
+          <button class="btn" onclick="useCalculatorFit()">Match my calculator budget</button>
+          <span class="dir-count" id="dir-count"></span>
+        </div>
+      </div>
+
+      <div class="dir-table-wrap">
+        <table class="dir-table" id="dir-table">
+          <thead>
+            <tr><th>Market</th><th>Tier</th><th>Platform</th><th>Format</th><th>Placement</th><th>Partner</th><th style="text-align:right;">Cost (USD)</th></tr>
+          </thead>
+          <tbody id="dir-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PACKAGES -->
+    <section class="tab-panel" id="tab-packages">
+      <h2 class="section-title">Packages</h2>
+      <p class="section-sub">Five tiers, set by investment bracket. Click a row for the full feature and targeting breakdown.</p>
+
+      <div class="pkg-table-wrap">
+        <table class="pkg-table" id="pkg-table">
+          <thead>
+            <tr>
+              <th>Package</th><th>Margin</th><th>Investment</th><th>Impressions</th>
+              <th>Est. views</th><th>Est. engagements</th><th>Recco creators</th><th>Recco events</th>
+            </tr>
+          </thead>
+          <tbody id="pkg-tbody"></tbody>
+        </table>
+      </div>
+
+      <p class="pkg-note">Impressions = ad served. Views = actively consumed. Engagements = took an action. Segment sizes differ by market &mdash; verify specific segments before quoting. Brand lift studies are a premium Meta feature at high cost, measuring whether people remember, recognise or consider the brand after the campaign.</p>
+    </section>
+
+    <!-- SALES -->
+    <section class="tab-panel" id="tab-sales">
+      <h2 class="section-title">Positioning</h2>
+      <p class="section-sub">External-facing language for each stage of the conversation.</p>
+
+      <div class="pitch-grid" id="pitch-grid"></div>
+      <p class="custom-note">Every package is always customised to the client.</p>
+
+      <div class="why-block">
+        <h3>Why paid media</h3>
+        <div class="why-rows">
+          <div class="why-row"><div class="term">Protects</div><div class="def">Both content and paid media investment.</div></div>
+          <div class="why-row"><div class="term">Prospects</div><div class="def">Finds brand-fit audience, not just creator fans.</div></div>
+          <div class="why-row"><div class="term">Powers</div><div class="def">Engaged exposure at scale.</div></div>
+        </div>
+      </div>
+
+      <div class="why-block">
+        <h3>Why Live Nation</h3>
+        <div class="why-rows">
+          <div class="why-row"><div class="term">Reach</div><div class="def">Millions of fans.</div></div>
+          <div class="why-row"><div class="term">Relevance</div><div class="def">Already qualified as relevant.</div></div>
+          <div class="why-row"><div class="term">Re-target</div><div class="def">Segmented, ready to target along the fan journey.</div></div>
+        </div>
+      </div>
+
+      <div class="why-block">
+        <h3>Soundbites</h3>
+        <div class="soundbites">
+          <div class="soundbite">Creator credibility. Guaranteed reach.</div>
+          <div class="soundbite">Makes creator content work harder. Effortlessly.</div>
+          <div class="soundbite">Paid means precise audiences. Taking action.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PITCH ON A PAGE -->
+    <section class="tab-panel" id="tab-pitch-page">
+      <h2 class="section-title">Pitch on a page</h2>
+      <p class="section-sub">A single client-facing slide, built to drop straight into a deck.</p>
+
+      <div class="pop-slide">
+        <h3 class="pop-headline">Creator content, <span>amplified by Live Nation media</span></h3>
+
+        <div class="pop-grid">
+
+          <div class="pop-card pop-grey">
+            <div class="pop-label">Why paid media</div>
+            <h4>The right audience,<br>guaranteed</h4>
+            <div class="pop-divider"></div>
+            <ul class="pop-list">
+              <li>
+                <span class="pop-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg>
+                </span>
+                <span>Reaches the right audience, every time</span>
+              </li>
+              <li>
+                <span class="pop-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6.5h16v9H9l-3.5 3v-3H4z" stroke-linejoin="round"/></svg>
+                </span>
+                <span>Attracts fans likely to engage</span>
+              </li>
+              <li>
+                <span class="pop-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="9" r="2.6"/><circle cx="16" cy="9" r="2.6"/><path d="M3 19c0-2.8 2.2-5 5-5s5 2.2 5 5M11 19c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke-linecap="round"/></svg>
+                </span>
+                <span>Increases campaign scale</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pop-card pop-dark">
+            <div class="pop-label">Live Nation media</div>
+            <h4>Built for fans.<br>Built for reach.</h4>
+            <div class="pop-divider"></div>
+            <ul class="pop-list">
+              <li>
+                <span class="pop-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12.5l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span>Guarantees the most relevant audience</span>
+              </li>
+              <li>
+                <span class="pop-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3"/><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke-linecap="round"/><path d="M12 3.6l.7 1.5 1.6.2-1.2 1.1.3 1.6-1.4-.8-1.4.8.3-1.6-1.2-1.1 1.6-.2z"/></svg>
+                </span>
+                <span>Pre-qualifies engaged fans</span>
+              </li>
+              <li>
+                <span class="pop-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 17l5-6 4 3 6-8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 6h4v4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span>Increases engaged scale</span>
+              </li>
+              <li>
+                <span class="pop-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 7.2-2.4" stroke-linecap="round"/><path d="M12 15v2" stroke-linecap="round"/></svg>
+                </span>
+                <span>Enables exclusive access (content boosted via creators' channels)</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pop-card pop-red">
+            <div class="pop-label">Impact</div>
+            <h4>What it means<br>for Partners</h4>
+            <div class="pop-divider"></div>
+            <div class="pop-impact">
+              <span class="pop-pill">Protects</span>
+              <p>Content and paid media investment</p>
+            </div>
+            <div class="pop-impact">
+              <span class="pop-pill">Prospects</span>
+              <p>Layer in brand-fit demographics within our audience</p>
+            </div>
+            <div class="pop-impact">
+              <span class="pop-pill">Powers</span>
+              <p>Engaged exposure combining artist fans and creator fans</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SETUP -->
+    <section class="tab-panel" id="tab-setup">
+      <h2 class="section-title">Set-up</h2>
+      <p class="section-sub">Below is a starting checklist &mdash; edit it to match your actual post-sale process.</p>
+
+      <ul class="checklist" id="setup-checklist">
+        <li><input type="checkbox"><div>Client investment confirmed<span class="tag">Deal signed</span></div></li>
+        <li><input type="checkbox"><div>Package locked in the calculator<span class="tag">Handover</span></div></li>
+        <li><input type="checkbox"><div>Creators sourced and fees agreed<span class="tag">Talent</span></div></li>
+        <li><input type="checkbox"><div>Media plan and CPM approved<span class="tag">Media</span></div></li>
+        <li><input type="checkbox"><div>Content calendar and briefing sent to creators<span class="tag">Content</span></div></li>
+        <li><input type="checkbox"><div>Reporting cadence and KPIs confirmed with client<span class="tag">Reporting</span></div></li>
+      </ul>
+
+      <button class="btn on-dark download-btn" onclick="downloadChecklist()">Download checklist</button>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <div class="attention-mini">
+      <div><span class="verb">Buy attention</span><span class="def">Paid media</span></div>
+      <div class="current"><span class="verb">Borrow attention</span><span class="def">Creators / influencers</span></div>
+      <div><span class="verb">Build attention</span><span class="def">Owned media, communities, content franchises</span></div>
+    </div>
+    <p class="foot-note">Rebuilt from the APAC Creator Campaigns &amp; Toolkit workbook. Calculator logic mirrors the workbook's CALCULATOR tab formulas.</p>
+  </footer>
+</div>
+
+<script>
+/* ---------------- Data ---------------- */
+
+const CPM_BASE = {AU:10.5, NZ:10.5, SG:10.5, JP:10.5, KR:10.5, CN:10, MY:10, PH:10, TH:10, TW:10};
+const CPM_ADDON = {Booster:0, Balance:2, Premium:6, Artist:6, Headliner:8};
+const HARDCOST_CPM = {Booster:5, Balance:5, Premium:4, Artist:4, Headliner:5};
+const HEADLINER_EXTRA = {AU:55000, NZ:30000, MY:30000, PH:20000, SG:25000, TH:25000, TW:25000, KR:40000, JP:30000}; // CN not listed -> 0
+const TRAVEL_BASE = {AU:5000, NZ:5000, CN:4000, SG:4500, PH:1000, TW:1000, TH:1000, MY:1500, KR:3500, JP:3500};
+const TRAVEL_MULT = {Booster:1, Balance:1.2, Premium:1.5, Artist:2, Headliner:3};
+const VIEW_RATE = {TikTok:0.25, Meta:0.15, Mixed:0.2};
+const ENGAGE_RATE = {Booster:0.05, Balance:0.05, Premium:0.07, Artist:0.07, Headliner:0.07};
+
+const PACKAGES = [
+  { name:"Booster", margin:"57–65%", bracket:"$50K – $99K", impressions:"1M – 3M", views:"150K – 450K", engagements:"50K – 150K", creators:"1", events:"1",
+    tagline:"Starter pack boosting quality content to high quality and relevant fans",
+    features:["Quality creator content","Amplified content, relevant audience","Deeper engagement","Amongst relevant audience"],
+    targeting:["Creator fans","LN/TM/Festival/Venue followers","LN/TM 1st-party data","Lookalikes","Basic demo targeting"] },
+  { name:"Balance", margin:"50–65%", bracket:"$100K – $149K", impressions:"2.5M – 4M", views:"375K – 600K", engagements:"125K – 200K", creators:"1–2", events:"1–2",
+    tagline:"Blend performance and scale",
+    features:["Quality creator content","Amplified content, relevant audience","Deeper engagement","Deep engagement at scale","Amongst relevant audience","Amongst high-value audience"],
+    targeting:["Creator fans","LN/TM/Festival/Venue followers","LN/TM 1st-party data","Venue/Festival/microsegments 1st-party data","Lookalikes","Basic demo","Interest targeting","Specific demo"] },
+  { name:"Premium", margin:"45–60%", bracket:"$150K – $249K", impressions:"4M+", views:"600K+", engagements:"280K+", creators:"3–5", events:"1–3",
+    tagline:"Premium creators, large following, segmented data, multiple phases, creators, events — all singing and dancing",
+    features:["Quality creator content","Amplified content, relevant audience","Deeper engagement","Deep engagement at scale","Amongst relevant audience","Amongst high-value audience"],
+    targeting:["Creator fans","LN/TM/Festival/Venue followers","LN/TM 1st-party data","Venue/Festival/microsegments 1st-party data","Lookalikes","Basic demo","Interest targeting","Specific demo"] },
+  { name:"Artist", margin:"40–55%", bracket:"$250K – $299K", impressions:"4.5M+", views:"675K+", engagements:"315K+", creators:"2–5", events:"1–3",
+    tagline:"Unique creators, exclusive access, niche audience at scale and highly credible content",
+    features:["Quality creator content","Amplified content, relevant audience","Deeper engagement","Deep engagement at scale","Amongst relevant audience","Amongst high-value audience","Amongst niche audience"],
+    targeting:["Creator fans","LN/TM/Festival/Venue followers","LN/TM 1st-party data","Venue/Festival/microsegments 1st-party data","Lookalikes","Basic demo","Interest targeting","Specific demo","Re-targeting","Microsegments"] },
+  { name:"Headliner", margin:"35–50%", bracket:"$300K+", impressions:"5M+", views:"750K+", engagements:"350K+", creators:"3–5", events:"1–5",
+    tagline:"Everything. And meaningful brand management using the most premium products from Meta",
+    features:["Quality creator content","Amplified content, relevant audience","Deeper engagement","Deep engagement at scale","Amongst relevant audience","Amongst high-value audience","Amongst niche audience","Brand lift study"],
+    targeting:["Creator fans","LN/TM/Festival/Venue followers","LN/TM 1st-party data","Venue/Festival/microsegments 1st-party data","Lookalikes","Basic demo","Interest targeting","Specific demo","Re-targeting","Microsegments"] },
+];
+
+const DIRECTORY = [
+  {market:"AU", tier:"Mega/Celeb", platform:"IG", format:"Single", placement:"Reel", cost:11000, partner:"Marriott Bonvoy"},
+  {market:"AU", tier:"Mega/Celeb", platform:"TikTok", format:"Single", placement:"In-feed", cost:9500, partner:"Marriott Bonvoy"},
+  {market:"AU", tier:"Mega/Celeb", platform:"IG", format:"Single", placement:"3 Slide Story", cost:7500, partner:"Marriott Bonvoy"},
+  {market:"AU", tier:"Mega/Celeb", platform:"IG", format:"Single", placement:"1 Slide Story", cost:2500, partner:"Marriott Bonvoy"},
+  {market:"AU", tier:"Mega/Celeb", platform:"IG", format:"Dual", placement:"Reel", cost:18840, partner:"Marriott Bonvoy"},
+  {market:"AU", tier:"Mega/Celeb", platform:"TikTok", format:"Dual", placement:"In-feed", cost:7500, partner:"Marriott Bonvoy"},
+  {market:"AU", tier:"Mega/Celeb", platform:"IG", format:"Dual", placement:"Story", cost:2500, partner:"Marriott Bonvoy"},
+  {market:"AU", tier:"Mega/Celeb", platform:"IG", format:"Dual", placement:"3 Slide Story", cost:2400, partner:"Marriott Bonvoy"},
+  {market:"AU", tier:"Mega/Celeb", platform:"IG", format:"Dual", placement:"1 Slide Story", cost:800, partner:"Marriott Bonvoy"},
+];
+
+/* ---------------- Formatting ---------------- */
+const fmtUSD = n => "$" + Math.round(n).toLocaleString('en-US');
+const fmtNum = n => Math.round(n).toLocaleString('en-US');
+const fmtPct = n => (n*100).toFixed(1) + "%";
+
+/* ---------------- Calculation (mirrors CALCULATOR tab) ---------------- */
+function packageType(investment){
+  if(investment < 50000) return "Insufficient Spend";
+  if(investment >= 300000) return "Headliner";
+  if(investment >= 250000) return "Artist";
+  if(investment >= 150000) return "Premium";
+  if(investment >= 100000) return "Balance";
+  return "Booster";
+}
+
+function calculate(){
+  const market = document.getElementById('in-market').value;
+  const investment = Math.max(0, Number(document.getElementById('in-investment').value) || 0);
+  const events = Math.max(1, Number(document.getElementById('in-events').value) || 1);
+  const creators = Math.max(1, Number(document.getElementById('in-creators').value) || 1);
+  const platform = document.getElementById('in-platform').value;
+
+  const pkg = packageType(investment);
+  if(pkg === "Insufficient Spend"){
+    return {market, investment, events, creators, platform, pkg, insufficient:true};
+  }
+
+  const hardcostCPM = HARDCOST_CPM[pkg];
+  const mediaBudget = investment / 3.3333333333;
+  const clientCPM = Math.round(CPM_BASE[market] + CPM_ADDON[pkg]);
+  const guaranteedImpressions = mediaBudget / clientCPM * 1000;
+  const mediaHardcosts = (guaranteedImpressions/1000) * hardcostCPM + (pkg === "Headliner" ? (HEADLINER_EXTRA[market]||0) : 0);
+  const travelFee = TRAVEL_BASE[market] * TRAVEL_MULT[pkg];
+  const totalTalentBudgetInternal = investment*0.2 + travelFee*events*creators;
+  const managementFees = investment*0.2 * (1 + (creators-1)*0.1 + (events-1)*0.05);
+  const profit = investment - (mediaHardcosts + totalTalentBudgetInternal);
+  const margin = profit / investment;
+  const talentBudgetExternal = investment - mediaBudget;
+  const estimatedViews = guaranteedImpressions * VIEW_RATE[platform];
+  const estimatedEngagements = guaranteedImpressions * ENGAGE_RATE[pkg];
+
+  return {
+    market, investment, events, creators, platform, pkg, insufficient:false,
+    profit, margin, mediaBudget, hardcostCPM, mediaHardcosts, travelFee,
+    totalTalentBudgetInternal, managementFees, clientCPM, guaranteedImpressions,
+    estimatedViews, estimatedEngagements, talentBudgetExternal,
+    avgImpressions: guaranteedImpressions/creators,
+    avgViews: estimatedViews/creators,
+    avgEngagements: estimatedEngagements/creators,
+    avgFee: managementFees/creators,
+  };
+}
+
+/* ---------------- Render: Calculator readout ---------------- */
+function renderReadout(){
+  const r = calculate();
+  const readout = document.getElementById('readout');
+
+  if(r.insufficient){
+    readout.innerHTML = `
+      <div class="eyebrow">Output</div>
+      <div class="warn-box">
+        <b>Insufficient spend.</b> A client investment under $50,000 doesn't map to a package in this
+        model. Raise the investment above $50,000 to see a package, cost split and expected performance.
+      </div>
+    `;
+    return;
+  }
+
+  const p = PACKAGES.find(x => x.name === r.pkg);
+
+  readout.innerHTML = `
+    <div class="eyebrow">Output</div>
+    <div class="pkg-flag"><span class="dot"></span>${r.pkg} package</div>
+
+    <div class="hero-row">
+      <div class="hero-stat profit">
+        <div class="label">Profit</div>
+        <div class="value num">${fmtUSD(r.profit)}</div>
+      </div>
+      <div class="hero-stat margin">
+        <div class="label">Margin</div>
+        <div class="value num">${fmtPct(r.margin)}</div>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-tile"><div class="label">Talent budget</div><div class="value num">${fmtUSD(r.talentBudgetExternal)}</div></div>
+      <div class="stat-tile"><div class="label">Media budget</div><div class="value num">${fmtUSD(r.mediaBudget)}</div></div>
+      <div class="stat-tile"><div class="label">Client CPM</div><div class="value num">$${r.clientCPM}</div></div>
+      <div class="stat-tile"><div class="label">Guaranteed impressions</div><div class="value num">${fmtNum(r.guaranteedImpressions)}</div></div>
+      <div class="stat-tile"><div class="label">Estimated views</div><div class="value num">${fmtNum(r.estimatedViews)}</div></div>
+      <div class="stat-tile"><div class="label">Estimated engagements</div><div class="value num">${fmtNum(r.estimatedEngagements)}</div></div>
+    </div>
+
+    <div class="per-creator">
+      <h4>Average per creator</h4>
+      <table class="pc-table">
+        <tr><td>Impressions</td><td class="num">${fmtNum(r.avgImpressions)}</td></tr>
+        <tr><td>Views</td><td class="num">${fmtNum(r.avgViews)}</td></tr>
+        <tr><td>Engagements</td><td class="num">${fmtNum(r.avgEngagements)}</td></tr>
+        <tr><td>Fee</td><td class="num">${fmtUSD(r.avgFee)}</td></tr>
+      </table>
+    </div>
+
+    <button class="btn on-dark download-btn" onclick="downloadExternalStats()">Download External Stats</button>
+
+    <div class="match-card">
+      <div class="eyebrow">This brief matches</div>
+      <h4>${p.name}</h4>
+      <div class="tagline">${p.tagline}</div>
+      <div class="match-cols">
+        <div>
+          <h5>Included</h5>
+          <ul>${p.features.slice(0,4).map(f => `<li>${f}</li>`).join('')}</ul>
+        </div>
+        <div>
+          <h5>Targeting</h5>
+          <ul>${p.targeting.slice(0,4).map(f => `<li>${f}</li>`).join('')}</ul>
+        </div>
+      </div>
+      <div class="match-actions">
+        <button class="btn" onclick="goToPackage('${p.name}')">Compare all packages</button>
+        <button class="btn" onclick="goToSales('${p.name}')">View positioning</button>
+        <button class="btn" onclick="useCalculatorFit()">Find matching creators</button>
+      </div>
+    </div>
+  `;
+}
+
+/* ---------------- Render: Packages tab ---------------- */
+function renderPackages(){
+  const tbody = document.getElementById('pkg-tbody');
+  tbody.innerHTML = PACKAGES.map(p => `
+    <tr class="pkg-row" data-pkg="${p.name}" onclick="togglePackageDetail('${p.name}')">
+      <td>${p.name}</td><td>${p.margin}</td><td>${p.bracket}</td><td>${p.impressions}</td>
+      <td>${p.views}</td><td>${p.engagements}</td><td>${p.creators}</td><td>${p.events}</td>
+    </tr>
+    <tr><td colspan="8" style="padding:0; border:none;">
+      <div class="pkg-detail" id="detail-${p.name}">
+        <h4>${p.name}</h4>
+        <div class="tagline">${p.tagline}</div>
+        <div class="match-cols">
+          <div><h5>Features</h5><ul>${p.features.map(f=>`<li>${f}</li>`).join('')}</ul></div>
+          <div><h5>Targeting</h5><ul>${p.targeting.map(f=>`<li>${f}</li>`).join('')}</ul></div>
+        </div>
+      </div>
+    </td></tr>
+  `).join('');
+  syncCurrentPackageHighlight();
+}
+
+function togglePackageDetail(name){
+  document.querySelectorAll('.pkg-detail').forEach(el => {
+    if(el.id === 'detail-'+name){ el.classList.toggle('open'); }
+    else { el.classList.remove('open'); }
+  });
+}
+
+function syncCurrentPackageHighlight(){
+  const r = calculate();
+  document.querySelectorAll('#pkg-tbody tr.pkg-row').forEach(row => {
+    row.classList.toggle('current', !r.insufficient && row.dataset.pkg === r.pkg);
+  });
+}
+
+function goToPackage(name){
+  switchTab('packages');
+  document.querySelectorAll('.pkg-detail').forEach(el => el.classList.toggle('open', el.id === 'detail-'+name));
+  setTimeout(() => {
+    const row = document.querySelector(`#pkg-tbody tr[data-pkg="${name}"]`);
+    if(row) row.scrollIntoView({behavior:'smooth', block:'center'});
+  }, 50);
+}
+
+/* ---------------- Render: Sales tab ---------------- */
+function renderPitchGrid(highlightName){
+  const grid = document.getElementById('pitch-grid');
+  grid.innerHTML = PACKAGES.map(p => `
+    <div class="pitch-card ${p.name === highlightName ? 'highlight' : ''}" id="pitch-${p.name}">
+      <h4>${p.name}</h4>
+      <p>${p.tagline}</p>
+    </div>
+  `).join('');
+}
+
+function goToSales(name){
+  switchTab('sales');
+  renderPitchGrid(name);
+  setTimeout(() => {
+    const card = document.getElementById('pitch-'+name);
+    if(card) card.scrollIntoView({behavior:'smooth', block:'center'});
+  }, 50);
+}
+
+/* ---------------- Render: Directory (filterable) ---------------- */
+function uniqueDirVals(key){
+  return Array.from(new Set(DIRECTORY.map(d => d[key]))).sort();
+}
+
+function populateDirectoryFilters(){
+  const fill = (id, values, label) => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = `<option value="">All ${label}</option>` + values.map(v => `<option value="${v}">${v}</option>`).join('');
+  };
+  fill('dir-f-market', uniqueDirVals('market'), 'markets');
+  fill('dir-f-tier', uniqueDirVals('tier'), 'tiers');
+  fill('dir-f-platform', uniqueDirVals('platform'), 'platforms');
+}
+
+function renderDirectoryRows(list){
+  const tbody = document.getElementById('dir-tbody');
+  tbody.innerHTML = list.length
+    ? list.map(d => `
+        <tr>
+          <td>${d.market}</td><td>${d.tier}</td><td>${d.platform}</td><td>${d.format}</td>
+          <td>${d.placement}</td><td>${d.partner}</td><td class="cost num">${fmtUSD(d.cost)}</td>
+        </tr>
+      `).join('')
+    : `<tr><td colspan="7" class="dir-empty-row">No creators match these filters. Try raising the budget or widening the market or platform.</td></tr>`;
+  document.getElementById('dir-count').textContent = `Showing ${list.length} of ${DIRECTORY.length} creators`;
+}
+
+function applyDirectoryFilters(){
+  const market = document.getElementById('dir-f-market').value;
+  const tier = document.getElementById('dir-f-tier').value;
+  const platform = document.getElementById('dir-f-platform').value;
+  const budgetRaw = document.getElementById('dir-f-budget').value;
+  const budget = budgetRaw === '' ? Infinity : Math.max(0, Number(budgetRaw));
+
+  const filtered = DIRECTORY.filter(d =>
+    (market === '' || d.market === market) &&
+    (tier === '' || d.tier === tier) &&
+    (platform === '' || d.platform === platform) &&
+    (d.cost <= budget)
+  );
+  renderDirectoryRows(filtered);
+}
+
+function selectIfPresent(id, value){
+  const sel = document.getElementById(id);
+  const has = Array.from(sel.options).some(o => o.value === value);
+  sel.value = has ? value : '';
+}
+
+function useCalculatorFit(){
+  const r = calculate();
+  if(!r.insufficient){
+    document.getElementById('dir-f-budget').value = Math.round(r.avgFee);
+    selectIfPresent('dir-f-market', r.market);
+    selectIfPresent('dir-f-platform', r.platform === 'Mixed' ? '' : r.platform);
+  }
+  switchTab('directory');
+  applyDirectoryFilters();
+}
+
+/* ---------------- Creators tab accordion ---------------- */
+function toggleCreatorBlock(btn){
+  btn.closest('.creator-block').classList.toggle('open');
+}
+
+/* ---------------- Set-up checklist download ---------------- */
+/* ---------------- Calculator: download external stats ---------------- */
+function downloadExternalStats(){
+  const r = calculate();
+  if(r.insufficient) return;
+
+  const lines = [
+    'APAC Creator Campaigns Toolkit \u2014 External Performance Stats',
+    '',
+    `Market: ${r.market}`,
+    `Platform: ${r.platform}`,
+    `Package: ${r.pkg}`,
+    '',
+    `Guaranteed Impressions: ${fmtNum(r.guaranteedImpressions)}`,
+    `Estimated Views: ${fmtNum(r.estimatedViews)}`,
+    `Estimated Engagements: ${fmtNum(r.estimatedEngagements)}`,
+  ];
+  const blob = new Blob([lines.join('\n')], {type: 'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'external-stats.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function downloadChecklist(){
+  const items = Array.from(document.querySelectorAll('#setup-checklist li'));
+  const lines = ['APAC Creator Campaigns Toolkit \u2014 Set-up Checklist', ''];
+  items.forEach(li => {
+    const checked = li.querySelector('input[type=checkbox]').checked;
+    const tagEl = li.querySelector('.tag');
+    const tag = tagEl ? tagEl.textContent.trim() : '';
+    const div = li.querySelector('div');
+    const text = div.textContent.replace(tag, '').trim();
+    lines.push(`[${checked ? 'x' : ' '}] ${text}${tag ? ' (' + tag + ')' : ''}`);
+  });
+  const blob = new Blob([lines.join('\n')], {type: 'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'setup-checklist.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ---------------- Tabs (grouped under Learn / Create / Position / Set-up) ---------------- */
+const PHASE_TABS = {
+  learn: ['start', 'glossary'],
+  create: ['calculator', 'directory'],
+  position: ['packages', 'sales', 'pitch-page'],
+  setup: ['setup'],
+};
+function phaseOfTab(name){
+  for(const [phase, tabs] of Object.entries(PHASE_TABS)){
+    if(tabs.includes(name)) return phase;
+  }
+  return null;
+}
+function closeAllPhaseMenus(){
+  document.querySelectorAll('.phase').forEach(p => p.classList.remove('open'));
+}
+function switchTab(name){
+  document.querySelectorAll('.phase-menu button[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-'+name));
+  const phase = phaseOfTab(name);
+  document.querySelectorAll('.phase').forEach(p => {
+    p.querySelector('.phase-toggle').classList.toggle('active', p.dataset.phase === phase);
+  });
+  closeAllPhaseMenus();
+}
+document.getElementById('phaseNav').addEventListener('click', e => {
+  const toggle = e.target.closest('.phase-toggle');
+  if(toggle){
+    if(toggle.dataset.tab){
+      switchTab(toggle.dataset.tab);
+      return;
+    }
+    const phaseEl = toggle.closest('.phase');
+    const wasOpen = phaseEl.classList.contains('open');
+    closeAllPhaseMenus();
+    if(!wasOpen) phaseEl.classList.add('open');
+    return;
+  }
+  const tabBtn = e.target.closest('.phase-menu button[data-tab]');
+  if(tabBtn) switchTab(tabBtn.dataset.tab);
+});
+document.addEventListener('click', e => {
+  if(!e.target.closest('.phase-nav')) closeAllPhaseMenus();
+});
+
+/* ---------------- Wire up calculator inputs ---------------- */
+['in-market','in-investment','in-events','in-creators','in-platform'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => { renderReadout(); syncCurrentPackageHighlight(); });
+});
+
+/* ---------------- Wire up directory filters ---------------- */
+['dir-f-market','dir-f-tier','dir-f-platform'].forEach(id => {
+  document.getElementById(id).addEventListener('change', applyDirectoryFilters);
+});
+document.getElementById('dir-f-budget').addEventListener('input', applyDirectoryFilters);
+
+/* ---------------- Init ---------------- */
+renderReadout();
+renderPackages();
+renderPitchGrid();
+populateDirectoryFilters();
+applyDirectoryFilters();
+</script>
+</body>
+</html>
